@@ -4,6 +4,7 @@ Equipo:
 Daniel Gámez
 Elvis Jiménez
 David Reyes
+Miguel Caeri
 
 El proyecto consta de una implementación en ROS de un carro autonomo capáz de hacer la 
 detección de luces de semaforo y señalamientos para tomar acciones de parar, avanzar,
