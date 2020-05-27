@@ -1,0 +1,10 @@
+Repositorio en GitHub para el proyecto final de la clase de Proyecto de Robótica
+
+Equipo:
+Daniel Gámez
+Elvis Jiménez
+David Reyes
+
+El proyecto consta de una implementación en ROS de un carro autonomo capáz de hacer la 
+detección de luces de semaforo y señalamientos para tomar acciones de parar, avanzar,
+girar a la izquierda y girar a la derecha.
