@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # Robotic Project Final
-
+import time
 # rospy for the subscriber
 import rospy
 # ROS Image message
@@ -22,6 +22,7 @@ def image_callback(msg):
         print(e)
     else:
         # Save your OpenCV2 image as a jpeg 
+        time.sleep(0.5)
         cv2.imwrite('camera_image.jpeg', cv2_img)
 
 def main():
@@ -30,7 +31,7 @@ def main():
     image_topic = "/two_wheels_robot/camera1/image_raw"
     # Set up your subscriber and define its callback
     rospy.Subscriber(image_topic, Image, image_callback)
-    # Spin until ctrl + c
+    # Spin until ctrl + c 
     rospy.spin()
 
 if __name__ == '__main__':

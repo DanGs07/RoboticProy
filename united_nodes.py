@@ -19,7 +19,7 @@ class velPublisher:
         rospy.on_shutdown(self.cleanup)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size = 1)
         # Set up your subscriber and define its callback
-        rospy.Subscriber("/two_wheels_robot/camera1/image_raw", Image, self.image_callback)
+        #rospy.Subscriber("/two_wheels_robot/camera1/image_raw", Image, self.image_callback)
         rospy.Subscriber("/base_scan", LaserScan, self.lidar_callback)
         print ("Publishers ok")
         print ("Starting node...")
@@ -29,42 +29,50 @@ class velPublisher:
         self.rangemin = 0
         self.ranges = []
         self.auxmin = 0
-        self.signal = 2; # 0 -> MoveFoward; 1 -> stop; 2 -> TurnRight; 3 -> TurnLeft
-        
+        self.signal = 0; # 0 -> MoveFoward; 1 -> stop; 2 -> TurnRight; 3 -> TurnLeft
+
         r = rospy.Rate(10) #10Hz
         print ("Node initialized to 10 Hz")
         
         while not rospy.is_shutdown():
-            #print("Publishing...")
-            if (self.rangemin < 0.8 and (self.anglemin > -20.0 and self.anglemin < 20.0 ) and self.signal == 2):                
-                self.velocity.linear.x = 0.1 #[m/s]
+        #print("Publishing...")
+	    f = open("bandera.txt", "r")
+	    self.signal = f.read(1)
+	    print(str(self.signal))
+	    self.signal = int(self.signal)
+	    #print("From file:", f.read(1))
+	    f.close()
+
+            if (self.rangemin < 1.0 and (self.anglemin > -45.0 and self.anglemin < 45.0 ) and self.signal == 2):                
+                self.velocity.linear.x = 0.0 #[m/s]
                 self.velocity.angular.z = 1.5 #[rad/s]
                 time.sleep(1.5)           
-            elif (self.rangemin < 0.8 and (self.anglemin > -20.0 and self.anglemin < 20.0 ) and self.signal == 1):
+            elif (self.rangemin < 1.0 and (self.anglemin > -45.0 and self.anglemin < 45.0 ) and self.signal == 1):
                 self.velocity.linear.x = 0 #[m/s]
                 self.velocity.angular.z = 0 #[rad/s]
-            elif (self.rangemin < 0.8 and (self.anglemin > -20.0 and self.anglemin < 20.0 ) and self.signal == 3):
-                self.velocity.linear.x = 0.1 #[m/s]
+            elif (self.rangemin < 1.0 and (self.anglemin > -45.0 and self.anglemin < 45.0 ) and self.signal == 3):
+                self.velocity.linear.x = 0.0 #[m/s]
                 self.velocity.angular.z = -1.5 #[rad/s]
                 time.sleep(1.5)                
             else:            
-                self.velocity.linear.x = 0.1 #[m/s]
+                self.velocity.linear.x = 0.15 #[m/s]
                 self.velocity.angular.z = 0 #[rad/s]                           
                         
             self.pub_cmd_vel.publish(self.velocity) #publish the number
-            print(self.velocity)
+            print(self.rangemin)
+            print(self.anglemin)
             r.sleep()
             
-    def image_callback(self, msg):
-    #print("Received an image!")
-        try:
-            # Convert your ROS Image message to OpenCV2
-            cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
-        except CvBridgeError, e:
-            print(e)
-        else:
-            # Save your OpenCV2 image as a jpeg 
-            cv2.imwrite('camera_image.jpeg', cv2_img)
+    # def image_callback(self, msg):
+    # #print("Received an image!")
+    #     try:
+    #         # Convert your ROS Image message to OpenCV2
+    #         cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
+    #     except CvBridgeError, e:
+    #         print(e)
+    #     else:
+    #         # Save your OpenCV2 image as a jpeg 
+    #         cv2.imwrite('camera_image.jpeg', cv2_img)
     
     def lidar_callback (self, msg):
         self.ranges = msg.ranges
